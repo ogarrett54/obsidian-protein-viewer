@@ -6,3 +6,15 @@ available in the app when your plugin is enabled.
 If your plugin does not need CSS, delete this file.
 
 */
+.msp-plugin * {
+    position: static !important;
+}
+
+.msp-plugin .msp-viewport div:has(canvas) {
+    height: 50%;
+    width: 100%;
+}
+
+.msp-plugin .msp-layout-static:has(.msp-viewport) {
+    display: flex !important;
+}
