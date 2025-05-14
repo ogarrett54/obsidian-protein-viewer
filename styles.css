@@ -11,10 +11,72 @@ If your plugin does not need CSS, delete this file.
 }
 
 .msp-plugin .msp-viewport div:has(canvas) {
-    height: 50%;
+    height: 100%;
     width: 100%;
 }
 
 .msp-plugin .msp-layout-static:has(.msp-viewport) {
+    display: flex !important;
+    flex-direction: column;
+}
+
+.msp-plugin .msp-layout-static .msp-viewport:has(canvas) {
+    height: 100% !important;
+    max-height: 700px;
+}
+
+.msp-plugin .msp-layout-static:has(canvas) {
+    height: 100% !important;
+    max-height: 700px;
+}
+
+.msp-plugin canvas {
+    height: 100% !important;
+    max-height: 700px;
+}
+
+.msp-plugin .msp-viewport-controls {
+    display: flex;
+    position: absolute !important;
+    top: 75px;
+}
+
+.msp-plugin .msp-scrollable-container {
+    position: relative !important;
+    top: 25px;
+    display: flex;
+    overflow: auto;
+    max-height: 200px;
+}
+
+.msp-hover-box-wrapper .msp-hover-box-body {
+    display: none;
+    position: absolute !important;         /* float on top of canvas */
+    top: 0;                  /* just below the icon row */
+    left: 36px;
+    padding: 6px;
+    border-radius: 4px;
+    z-index: 20;                /* above canvas & sidebar */
+    pointer-events: auto;
+}
+
+.msp-hover-box-wrapper:hover .msp-hover-box-body,
+.msp-hover-box-body:hover {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.msp-hover-box-wrapper {
+    box-sizing: content-box;
+}
+
+#molstar-container > div > div > div.msp-layout-hide-top.msp-layout-hide-left.msp-layout-hide-right.msp-layout-hide-bottom > div > div > div.msp-viewport-top-left-controls > div > div > button {
+    display: none !important;
+}
+
+#molstar-container > div > div > div.msp-layout-hide-left.msp-layout-hide-bottom > div.msp-layout-region.msp-layout-main > div > div.msp-viewport-controls > div > div:nth-child(3) {
+    position: relative !important;
+    top: 605px;
     display: flex !important;
 }

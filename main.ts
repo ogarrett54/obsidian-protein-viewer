@@ -45,8 +45,14 @@ export default class ProteinViewerPlugin extends Plugin {
 		this.addCommand({
 			id: "fetch-pdb-via-modal",
 			name: "Fetch PDB via Modal",
-			callback: () => {
-				new PDBPromptModal(this.app).open();
+			callback: async () => {
+				// Activate or get the view
+				await this.activateView();
+				const leaves = this.app.workspace.getLeavesOfType(VIEW_TYPE);
+				if (leaves.length > 0) {
+					const view = leaves[0].view as ProteinView;
+					view.promptAndLoadPdb();
+				}
 			},
 		});
 
@@ -97,13 +103,28 @@ export default class ProteinViewerPlugin extends Plugin {
 }
 
 class PDBPromptModal extends Modal {
+	private inputEl: HTMLInputElement;
+	public result: string | null = null;
+
 	constructor(app: App) {
 		super(app);
 	}
 
 	onOpen() {
 		const { contentEl } = this;
-		contentEl.setText("Woah!");
+		contentEl.createEl("h4", { text: "Enter PDB ID" });
+		const inputContainer = contentEl.createEl("div");
+		inputContainer.style.display = "flex";
+		inputContainer.style.gap = "8px";
+		this.inputEl = inputContainer.createEl("input", { type: "text" });
+		this.inputEl.style.flex = "auto";
+		this.inputEl.focus();
+
+		inputContainer.createEl("button", { text: "Load" }).onClickEvent(() => {
+			this.result = this.inputEl.value.trim().toUpperCase() || null;
+			console.log(this.result);
+			this.close();
+		});
 	}
 
 	onClose() {
@@ -158,7 +179,7 @@ export class ProteinView extends ItemView {
 	async onOpen() {
 		const container = this.containerEl.children[1];
 		container.empty();
-		container.createEl("h4", { text: "This is a test" });
+		container.createEl("h4", { text: "Protein Viewer" });
 		const mount = container.createEl("div");
 		mount.id = "molstar-container";
 
@@ -167,8 +188,34 @@ export class ProteinView extends ItemView {
 			layoutIsExpanded: false,
 			layoutShowControls: true,
 			layoutShowLeftPanel: false,
+			layoutShowAnimation: false,
+			layoutShowSequence: true,
+
+			viewportShowSelectionMode: false,
+
+			pdbProvider: "rcsb",
+			emdbProvider: "rcsb",
 		});
 	}
 
 	async onClose() {}
+
+	async promptAndLoadPdb() {
+		const modal = new PDBPromptModal(this.app);
+		modal.open();
+
+		await new Promise<void>((resolve) => {
+			console.log("promise received");
+			const oldOnClose = modal.onClose;
+			modal.onClose = () => {
+				oldOnClose.call(modal);
+				resolve();
+			};
+		});
+
+		const id = modal.result;
+		if (!id) return;
+		console.log("loading PDB");
+		await this.viewer.loadPdb(id);
+	}
 }

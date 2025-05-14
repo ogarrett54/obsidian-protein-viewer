@@ -1,0 +1,323 @@
+/* ──────────────────────────  GLOBAL RESET  ────────────────────────── */
+.msp-plugin *            { position: static !important; }       /* let Obsidian lay things out */
+.msp-drag-drop-overlay,
+.msp-background-tasks,
+.msp-highlight-toast-wrapper,
+.msp-viewport-top-left-controls,
+.msp-animation-viewport-controls       { display:none !important; }
+
+/* ──────────────────────────  SEQUENCE BAR  ────────────────────────── */
+.msp-layout-region.msp-layout-top .msp-sequence-select { display:none !important; }   /* hide chain/entity menus */
+.msp-sequence                       {
+    padding:4px 8px;
+    max-height:60px;
+    overflow-x:auto;                     /* horizontal scroll */
+    overflow-y:hidden;
+    white-space:nowrap;
+    background:var(--background-primary);
+    border-bottom:1px solid var(--divider-color);
+}
+.msp-sequence-wrapper               { display:inline-block; }
+.msp-sequence-number                { color:var(--text-faint); }
+
+/* ──────────────────────────  VIEWPORT HEIGHT  ─────────────────────── */
+.msp-viewport canvas               { height:100% !important; max-height:calc(100vh - 120px); }
+
+/* ──────────────────────────  VIEWPORT ICON STRIP  ─────────────────── */
+/* First hide every control, then selectively re‑enable the three we need */
+.msp-viewport-controls-buttons > div           { display:none !important; }
+
+/* 1️⃣ Screenshot / State Snapshot (2nd group in the strip) */
+.msp-viewport-controls-buttons > div:nth-child(2) { display:block !important; }
+
+/* 2️⃣ Settings button (holds background selector) – it’s the 3rd group, 3rd button */
+.msp-viewport-controls-buttons > div:nth-child(3)                    { display:block !important; }
+.msp-viewport-controls-buttons > div:nth-child(3) button             { display:none !important; }
+.msp-viewport-controls-buttons > div:nth-child(3)
+        button[title="Settings / Controls Info"]                     { display:block !important; }
+
+/* ──────────────────────────  RIGHT‑HAND PANEL  ───────────────────── */
+/* Hide panel completely, then expose only Quick Styles inside it */
+.msp-layout-region.msp-layout-right                       { display:none !important; }
+.msp-layout-region.msp-layout-right #quickstyles           { display:block !important; }
+.msp-layout-region.msp-layout-right                        {      /* re‑enable region for quickstyles */
+    display:block !important;
+    width:230px;                    /* --- tweak‑me: width of the mini‑panel --- */
+}
+.msp-layout-region.msp-layout-right > .msp-layout-static > * { display:none !important; }
+#quickstyles                                             { margin-top:8px !important; }
+#quickstyles .msp-flex-row                               { gap:6px; flex-wrap:wrap; }
+
+/* ──────────────────────────  BUTTON LOOK (Obsidian‑ish)  ─────────── */
+.msp-plugin button               {
+    background:var(--interactive-normal);
+    color:var(--text-normal);
+    border:none; padding:4px 8px; border-radius:4px;
+}
+.msp-plugin button:hover         { background:var(--interactive-hover); }
+
+/* ──────────────────────────  MISC CLEAN‑UP  ───────────────────────── */
+.msp-scrollable-container        { overflow:hidden !important; }   /* prevent stray scrollbars */
+
+/* ───────────── 1. pin sequence ribbon to bottom of viewport ───────────── */
+.msp-sequence                       {
+    position:absolute;              /* new: take out of document flow      */
+    left:0; right:0; bottom:0;
+    z-index:3000;                   /* over canvas                         */
+    background:#111;                /* dark Obsidian‑like ribbon           */
+    border:none;
+    padding:2px 52px 4px 8px;       /* leave space for floating buttons    */
+    overflow-x:auto; overflow-y:hidden;
+}
+
+/* slim down sequence characters a bit */
+.msp-sequence-wrapper span          { font-size:0.85em; line-height:1.4; }
+
+/* ───────────── 2. bring back JUST the chain selector ───────────── */
+.msp-sequence-select                {        /* put it one line above seq */
+    position:absolute;
+    bottom:100%; left:0;
+    padding:4px 8px;
+    background:#111;
+    z-index:3000;
+    display:flex; gap:6px; align-items:center;
+    border-top:1px solid var(--divider-color);
+}
+.msp-sequence-select span:not(:has(svg))     { display:none; } /* hide label text */
+.msp-sequence-select svg                      { display:none; } /* hide help icon */
+.msp-sequence-select select                   { display:none !important; }
+.msp-sequence-select select[title^="[Chain"]  {  /* keep chain drop‑down */
+    display:block !important;
+    width:auto; min-width:64px;
+    background:var(--interactive-normal);
+    color:var(--text-normal);
+    border:none; border-radius:4px; padding:2px 6px;
+}
+
+/* ───────────── 3. float the three control buttons ───────────── */
+.msp-viewport-controls                       { position:absolute; bottom:52px; left:6px; }
+.msp-viewport-controls-buttons               { gap:4px; }
+.msp-viewport-controls-buttons > div         { display:none !important; }
+
+/* Screenshot button */
+.msp-viewport-controls-buttons > div:nth-child(2)              { display:block !important; }
+
+/* Background selector (“Settings / Controls Info”) */
+.msp-viewport-controls-buttons > div:nth-child(3)              { display:block !important; }
+.msp-viewport-controls-buttons > div:nth-child(3) button       { display:none !important; }
+.msp-viewport-controls-buttons > div:nth-child(3)
+        button[title="Settings / Controls Info"]               { display:block !important; }
+
+/* Quick Styles floating mini‑panel */
+#quickstyles                                   {
+    position:absolute !important;
+    bottom:52px; left:116px;                   /* parked next to the icons  */
+    background:#111; padding:6px 8px;
+    border-radius:4px; z-index:3000;
+    width:260px;                               /* adjust if you like        */
+}
+#quickstyles .msp-transform-header             { display:none !important; } /* hide title bar */
+#quickstyles .msp-control-group-header         { display:none !important; } /* hide “Apply …”  */
+#quickstyles .msp-flex-row                     { gap:6px; flex-wrap:wrap; }
+
+#quickstyles button                            {
+    flex:1 1 46%;                              /* 2 × 2 grid                */
+    padding:4px 0;
+}
+
+/* ───────────── 4. protect canvas from being covered by right panel ───── */
+.msp-layout-region.msp-layout-right           { display:none !important; }  /* still collapsed */
+
+/* ───────────── 5. cosmetic tweaks for buttons on dark overlays ────────── */
+.msp-plugin button                            { background:#222; color:#d9d9d9; }
+.msp-plugin button:hover                      { background:#333; }
+
+/* ───── Fix 1: make sequence letters visible on dark bar ───── */
+.msp-sequence-wrapper span {      /* letters & numbers */
+    color:#eee !important;        /* light grey */
+}
+
+/* ───── Fix 2: keep right region alive but blank it out ───── */
+.msp-layout-region.msp-layout-right {
+    width:0 !important;           /* collapses it visually                 */
+    overflow:hidden !important;
+    position:relative !important; /* still allows absolute descendants     */
+}
+
+/* hide every panel inside the region … */
+.msp-layout-region.msp-layout-right > .msp-layout-static > * {
+    display:none !important;
+}
+/* …except Quick Styles */
+#quickstyles { display:block !important; }
+
+/* ───── Fix 3: float Quick Styles independently ───── */
+#quickstyles {
+    position:fixed !important;    /* detach from hidden sidebar            */
+    bottom:52px; left:116px;      /* park next to tool icons               */
+    z-index:3000;
+    background:#111;
+    padding:6px 8px;
+    border-radius:4px;
+    width:260px;
+}
+#quickstyles .msp-transform-header,
+#quickstyles .msp-control-group-header { display:none !important; }
+#quickstyles .msp-flex-row             { gap:6px; flex-wrap:wrap; }
+#quickstyles button                    { flex:1 1 46%; padding:4px 0; }
+
+/* ↓ optional: if Quick Styles is now on top of something you prefer to see,
+   bump 'left' to 180 px or wherever you like. */
+
+   /* ───────── 0  don’t touch anything else – append this block last ─────── */
+
+/* 1  — LET THE RIGHT REGION EXIST (but make it invisible) */
+.msp-layout-region.msp-layout-right {
+    width:0 !important;               /* collapses the strip */
+    overflow:visible !important;      /* but still allows children to show */
+    pointer-events:none;              /* don’t steal drag/scroll input     */
+}
+
+/* 2  — HIDE **EVERY** PANEL in the right region … */
+.msp-layout-region.msp-layout-right .msp-transform-wrapper {
+    display:none !important;
+}
+
+/* … EXCEPT the one whose header has id="quickstyles" */
+#quickstyles,
+#quickstyles.msp-transform-header,               /* the header itself */
+#quickstyles + .msp-control-group-wrapper,       /* its button rows   */
+#quickstyles + .msp-control-group-wrapper + .msp-control-group-wrapper {
+    display:block !important;
+}
+
+/* 3  — FLOAT THE ENTIRE QUICK‑STYLES WRAPPER */
+#quickstyles,                      /* header  */
+#quickstyles.parent-floating-card { /* give the whole group a marker class */
+    position:fixed !important;
+    bottom:52px; left:110px;          /* adjust X/Y if you like */
+    z-index:4000;
+    background:#111;
+    border-radius:6px;
+    padding:6px 8px 4px;
+    box-shadow:0 0 6px rgba(0,0,0,.4);
+    pointer-events:auto;              /* re‑enable clicks for this island */
+}
+
+/* make its title bar disappear */
+#quickstyles.msp-transform-header { display:none !important; }
+
+/* tidy the two button rows */
+#quickstyles + .msp-control-group-wrapper,
+#quickstyles + .msp-control-group-wrapper + .msp-control-group-wrapper {
+    margin:0 !important; 
+}
+#quickstyles .msp-flex-row,
+#quickstyles + .msp-control-group-wrapper .msp-flex-row,
+#quickstyles + .msp-control-group-wrapper + .msp-control-group-wrapper .msp-flex-row {
+    gap:6px; flex-wrap:wrap;
+}
+#quickstyles button { 
+    flex:1 1 46%;               /* 2×2 grid */
+    padding:4px 0;
+    background:#222; color:#ddd; border:none;
+}
+#quickstyles button:hover { background:#333; }
+
+/* 4  — SEQUENCE BAR COLOUR (if you load a sequence) */
+.msp-sequence-wrapper span { color:#eee !important; }
+
+/* ─────────── QUICK‑STYLES FLOATING CARD ───────────
+   Uses the path you supplied.  Nothing else is touched.   */
+
+/* 1 — select the two <div.msp-flex-row> that hold the style buttons */
+#molstar-container > div > div > div.msp-layout-hide-left.msp-layout-hide-bottom
+  > div.msp-layout-region.msp-layout-right > div > div
+  > div:nth-child(4) > div:nth-child(2),
+#molstar-container > div > div > div.msp-layout-hide-left.msp-layout-hide-bottom
+  > div.msp-layout-region.msp-layout-right > div > div
+  > div:nth-child(4) > div:nth-child(3)
+{
+    /* pull them out of the hidden sidebar */
+    position:absolute !important;
+    left:110px;                     /* X‑offset from viewport left—tweak freely */
+    bottom:52px;                    /* just above the sequence ribbon          */
+    z-index:4000 !important;
+
+    /* card look */
+    background:#111;
+    padding:6px 8px 4px;
+    border-radius:6px;
+    box-shadow:0 0 6px rgba(0,0,0,.4);
+
+    display:flex;                   /* keep the buttons visible */
+    gap:6px; flex-wrap:wrap;
+    pointer-events:auto;            /* clickable again          */
+}
+
+/* 2 — tidy the four buttons */
+#molstar-container .msp-flex-row button {
+    flex:1 1 46%;                   /* 2×2 grid                     */
+    padding:4px 0;
+    background:#222; color:#ddd; border:none;
+}
+#molstar-container .msp-flex-row button:hover { background:#333; }
+
+/* 3 — collapse the rest of the right sidebar so it no longer shifts layout */
+#molstar-container div.msp-layout-region.msp-layout-right {
+    width:0 !important;
+    overflow:hidden !important;
+    pointer-events:none;            /* ignore scroll/drag in that strip        */
+}
+
+/* ───────── UN‑HIDE & FLOAT THE QUICK‑STYLES CARD ───────── */
+/* 0) make the right sidebar a harmless anchor */
+.msp-layout-region.msp-layout-right {
+    position:relative !important;   /* anchor for absolute children  */
+    width:0 !important;             /* stays collapsed               */
+    overflow:visible !important;    /* let floated card escape       */
+    pointer-events:none;            /* don’t capture clicks/scrolls  */
+}
+
+/* 1) bring the specific wrapper back from display:none
+      (this is one level ABOVE the .msp-flex-row rows) */
+#molstar-container > div > div > div.msp-layout-hide-left.msp-layout-hide-bottom
+  > div.msp-layout-region.msp-layout-right > div > div
+  > div:nth-child(4)                          /*  ← your wrapper */
+{
+    display:block !important;                 /* override earlier hide */
+    position:absolute !important;             /* float over canvas     */
+    left:110px;                               /* tweak X               */
+    bottom:52px;                              /* tweak Y               */
+    z-index:4000;
+
+    background:#111;
+    border-radius:6px;
+    padding:6px 8px 4px;
+    box-shadow:0 0 6px rgba(0,0,0,.4);
+    pointer-events:auto;                      /* clickable again       */
+}
+
+/* 2) optional—hide its title bar so only the buttons remain */
+#molstar-container > div > div > div.msp-layout-hide-left.msp-layout-hide-bottom
+  > div.msp-layout-region.msp-layout-right > div > div
+  > div:nth-child(4) > .msp-transform-header      { display:none !important; }
+
+/* 3) style the two button rows inside it */
+#molstar-container > div > div > div.msp-layout-hide-left.msp-layout-hide-bottom
+  > div.msp-layout-region.msp-layout-right > div > div
+  > div:nth-child(4) .msp-flex-row
+{
+    gap:6px; flex-wrap:wrap;
+}
+#molstar-container > div > div > div.msp-layout-hide-left.msp-layout-hide-bottom
+  > div.msp-layout-region.msp-layout-right > div > div
+  > div:nth-child(4) button
+{
+    flex:1 1 46%;                  /* 2×2 grid        */
+    padding:4px 0;
+    background:#222; color:#ddd; border:none;
+}
+#molstar-container > div > div > div.msp-layout-hide-left.msp-layout-hide-bottom
+  > div.msp-layout-region.msp-layout-right > div > div
+  > div:nth-child(4) button:hover     { background:#333; }
